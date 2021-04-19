@@ -1,0 +1,64 @@
+install.packages('GOplot')
+library(GOplot)
+library(ggplot2)
+library(ggdendro)
+library(gridExtra)
+library(RColorBrewer)
+circ = circle_dat(GC_GO,GC_markers_df_1)
+getwd()
+setwd("/Users/xiaoyulin/desktop")
+data = read.table("go_all.txt",header = T,sep = "\t")
+library("tidyverse")
+data$Category = gsub("GOTERM_BP_DIRECT","biological_process",data$Category)
+data$Category = gsub("GOTERM_CC_DIRECT","cellular_component",data$Category)
+data$Category = gsub("GOTERM_MF_DIRECT","molecular_function",data$Category)
+data = separate(data = data,col=Term,into = c("GO_id","GO_Term"),sep = "~")
+?separate
+??separate
+library(tidyr)
+data = separate(data = data,col=Term,into = c("GO_id","GO_Term"),sep = "~")
+View(data)
+shorten_names = function(x,n_word = 4,n_char = 40){
+  if(length(strsplit(x," ")[[1]]) > n_word || (nchar(x) > 40))
+    {
+    if(nchar(x) > 40) x = substr(x,1,40)
+    x= paste(paste(strsplit(x," ")[[1]][1:min(length(strsplit(x," ")[[1]]),n_word)],collapse = " "),"...",sep = "")
+    return(x)
+  }
+  else
+  {
+    return(x)
+  }
+}
+data$GO_Term = (sapply(levels(data$GO_Term)[as.numeric(data$GO_Term)],shorten_names))
+data$GO_Term = (sapply(levels(data$GO_Term)[as.numeric(data$GO_Term)]))
+data = data[order(data[,1])]
+View(data)
+shorten_names <- function(x, n_word=4, n_char=40){
+  if (length(strsplit(x, " ")[[1]]) > n_word || (nchar(x) > 40))
+  {
+    if (nchar(x) > 40) x <- substr(x, 1, 40)
+    x <- paste(paste(strsplit(x, " ")[[1]][1:min(length(strsplit(x," ")[[1]]), n_word)],
+                     collapse=" "), "...", sep="")
+    return(x)
+  }
+  else
+  {
+    return(x)
+  }
+}
+data$GO_term=(sapply(levels(data$GO_term)[as.numeric(data$GO_term)],shorten_names))
+data<-data[order(data[,1]),]
+View(data)
+data$GO_Term<- as.character(data$GO_Term) 
+data$GO_Term<-factor(data$GO_Term,levels = c(data$GO_Term))
+COLS <- c("#66C3A5", "#8DA1CB", "#FD8D62")
+a<-ggplot(data=data, aes(x=GO_term,y=Count, fill=Category)) + geom_bar(stat="identity", width=0.8) + coord_flip() +  xlab("GO term") + ylab("Num of Genes") +scale_fill_manual(values = COLS)+ theme_bw()
+View(a)
+ggplot(data=data, aes(x=GO_Term,y=Count, fill=Category)) + geom_bar(stat="identity", width=0.8) + coord_flip() +  xlab("GO term") + ylab("Num of Genes") +scale_fill_manual(values = COLS)+ theme_bw()
+ggplot(data=data, aes(x=GO_Term,y=Count, fill=Category))
+ggplot(data=data, aes(x=GO_Term,y=Count, fill=Category)) + geom_bar(stat="identity", width=0.8)
+ggplot(data=data, aes(x=GO_Term,y=Count, fill=Category)) + geom_bar(stat="identity", width=0.8)
+data = subset(data,Count >3) 
+data = subset(data , "GO_Term" = "biological_process")
+View(data)
