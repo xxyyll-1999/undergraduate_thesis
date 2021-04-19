@@ -1,0 +1,67 @@
+> Idents(immune.combined) = immune.combine$orig.ident
+> subset_js = subset(immune.combined,idents = c("JS3","JS7","JS10","JS14"))
+> Idents(subset_js) = subset_js$celltype
+> subtype = subset(subset_js,idents = c("rod","muller glia"))
+> library(velocyto.R)
+> ldat_js3 <- read.loom.matrices("JS3.loom")
+> ldat_js7 <- read.loom.matrices("JS7.loom")
+> ldat_js10 <- read.loom.matrices("JS10.loom")
+> ldat_js14 <- read.loom.matrices("JS14.loom")
+> head(colnames(subset_js_celltype_js14))
+> head(colnames(ldat_js3))
+> head(colnames(ldat_js3$spliced))
+> head(colnames(ldat_js7$spliced))
+> colnames(ldat_js3$spliced) = gsub("x","-1_3",colnames(ldat_js3$spliced))
+> colnames(ldat_js3$spliced) = gsub("JS3:","",colnames(ldat_js3$spliced))
+> colnames(ldat_js3$unspliced) = colnames(ldat_js3$spliced)
+> colnames(ldat_js3$ambiguous) = colnames(ldat_js3$spliced)
+> head(colnames(ldat_js3$spliced))
+> colnames(ldat_js7$spliced) = gsub("x","-1_7",colnames(ldat_js7$spliced))
+> colnames(ldat_js7$spliced) = gsub("JS7:","",colnames(ldat_js7$spliced))
+> colnames(ldat_js7$unspliced) = colnames(ldat_js7$spliced)
+> colnames(ldat_js7$ambiguous) = colnames(ldat_js7$spliced)
+> head(colnames(ldat_js7$spliced))
+> colnames(ldat_js10$spliced) = gsub("x","-1_10",colnames(ldat_js10$spliced))
+> colnames(ldat_js10$spliced) = gsub("JS10:","",colnames(ldat_js10$spliced))
+> colnames(ldat_js10$unspliced) = colnames(ldat_js10$spliced)
+> colnames(ldat_js10$ambiguous) = colnames(ldat_js10$spliced)
+> head(colnames(ldat_js10$spliced))
+> colnames(ldat_js14$spliced) = gsub("x","-1_14",colnames(ldat_js14$spliced))
+> colnames(ldat_js14$spliced) = gsub("JS14:","",colnames(ldat_js14$spliced))
+> colnames(ldat_js14$unspliced) = colnames(ldat_js14$spliced)
+> colnames(ldat_js14$ambiguous) = colnames(ldat_js14$spliced)
+> head(colnames(ldat_js14$spliced))
+> loom_all = list(spliced = cbind(ldat_js3$spliced,ldat_js7$spliced,ldat_js10$spliced,ldat_js14$spliced),unspliced = cbind(ldat_js3$unspliced,ldat_js7$unspliced,ldat_js10$unspliced,ldat_js14$unspliced),ambiguous = cbind(ldat_js3$ambiguous,ldat_js7$ambiguous,ldat_js10$ambiguous,ldat_js14$ambiguous))
+> loom_all = list(spliced = cbind(ldat_js3$spliced,ldat_js7$spliced,ldat_js10$spliced,ldat_js14$spliced),unspliced = cbind(ldat_js3$unspliced,ldat_js7$unspliced,ldat_js10$unspliced,ldat_js14$unspliced),ambiguous = cbind(ldat_js3$ambiguous,ldat_js7$ambiguous,ldat_js10$ambiguous,ldat_js14$ambiguous))
+> loom_all$spliced = loom_all$spliced[,rownames(subset_js_celltype@meta.data)]
+> setdiff(rownames(subset_js_celltype@meta.data),colnames(loom_all$spliced))
+> cell_name <- intersect(rownames(subtype@meta.data),colnames(ldat$spliced))
+> subtype <- SubsetData(subtype,cells = cell_name)
+> loom_all$unspliced = loom_all$unspliced[,rownames(subset_js_celltype@meta.data)]
+> loom_all$ambiguous = loom_all$ambiguous[,rownames(subset_js_celltype@meta.data)]
+> emat = loom_all$spliced
+> nmat = loom_all$unspliced
+> View(subset_js_celltype)
+> Idents(subset_js_celltype) = subset_js_celltype$celltype
+> cluster.label = subset_js_celltype@active.ident
+> emb = subset_js_celltype@reductions$umap@cell.embeddings
+# 估计细胞和细胞的距离
+> cell.dist = as.dist(1-armaCor(t(subset_js_celltype@reductions$umap@cell.embeddings)))
+> emat = filter.genes.by.cluster.expression(emat,cluster.label,min.max.cluster.average = 0.2)
+> nmat = filter.genes.by.cluster.expression(nmat,cluster.label,min.max.cluster.average = 0.05)
+> length(intersect(rownames(emat),rownames(nmat)))
+> fit.quantile = 0.02
+> rvel.cd <- gene.relative.velocity.estimates(emat,nmat,deltaT=1,kCells=25,cell.dist=cell.dist,fit.quantile=fit.quantile)
+> library(ggplot2)
+> gg <- UMAPPlot(Neusub)
+> gg
+> ggplot_build(gg)$data
+> colors <- as.list(ggplot_build(gg)$data[[1]]$colour)
+> names(colors) <- rownames(emb)
+
+> show.velocity.on.embedding.cor(emb,rvel.cd,n=500,scale='sqrt',
+                               cell.colors=ac(colors),
+                               cex=0.8,arrow.scale=3,show.grid.flow=TRUE,
+                               min.grid.cell.mass=0.5,grid.n=40,arrow.lwd=2,
+                               do.par=F,cell.border.alpha = 0.1)
+
