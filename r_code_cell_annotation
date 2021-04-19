@@ -1,0 +1,111 @@
+> DimPlot(immune.combined)
+> rod = colnames(subset(immune.combined,idents = c('1','3','5','0','10','24','32')))
+> Idents(immune.combined,cell=rod) <- "rod"
+> DimPlot(immune.combined)
+> pericytes = colnames(subset(immune.combined,ident = c('26')))
+> DimPlot(immune.combined)
+> Idents(immune.combined,cell=pericytes) <-"pericytes"
+> DimPlot(immune.combined)
+> horizontal_cell = colnames(subset(immune.combined,ident = '16'))
+> Idents(immune.combined,cell=horizontal_cell) <-"horizontal cell"
+> DimPlot(immune.combined)
+
+library(Seurat)
+
+Seurat v4 will be going to CRAN in the near future;
+for more details, please visit https://satijalab.org/seurat/v4_changes
+
+> load("/media/workspace/yph/3/retina/immune.combined.rdata")
+> load("/media/workspace/yph/3/retina/sceList.rdata")
+> View(immune.combined)
+> Index = colnames(subset(immune.combined,idents = c("JS1","JS2","JS5","JS6","JS9","JS11","JS13","JS15")))
+> immune.combined$orig.ident
+> table(immune.combined$orig.ident)
+> DimPlot(immune.combined,group.by = "orig.ident")
+> index = colnames(subset(immune.combined,idents = c("JS1","JS2","JS5","JS6","JS9","JS11","JS13","JS15")))
+> Idents(immune.combined) <-immune.combined$orig.ident
+> index = colnames(subset(immune.combined,idents = c("JS1","JS2","JS5","JS6","JS9","JS11","JS13","JS15")))
+> head(index)
+> DimPlot(immune.combined)
+> Idents(immune.combined,cell=index) <- "macular"
+> index2 = colnames(subset(immune.combined,idents = c("JS3","JS4","JS7","JS8","JS10","JS12","JS14","JS16")))
+> Idents(immune.combined,cell=index2) <- "periphery"
+> DimPlot(immune.combined)
+> immune.combined@meta.data[['group']]%>%table()
+> library(dplyr)
+> immune.combined@meta.data[['group']]%>%table()
+> immune.combined$group = Idents(immune.combined)
+> View(immune.combined)
+> immune.combined$group = Idents(immune.combined)
+> table(immune.combined$group)
+> table(immune.combined$group,immune.combined$orig.ident)
+> table(immune.combined$orig.ident)
+> DimPlot(immune.combined)
+> DimPlot(immune.combined,label = T)
+> DimPlot(immune.combined,label = T,group.by = 'seurat_clusters')
+> Idents(immune.combined) <- immune.combined$seurat_clusters
+> cone = colnames(subset(immune.combined,idents = c('13','22')))
+> rod = colnames(subset(immune.combined,idents = c('1','3','5','0','10','24','32')))
+> head(rod)
+> pericytes = colnames(subset(immune.combined,idents = '26'))
+> horizontal_cell = colnames(subset(immune.combined,idents = '16'))
+> DimPlot(immune.combined)
+> Idents(immune.combined,cell=cone) <- 'cone'
+> DimPlot(immune.combined)
+> Idents(immune.combined,cell=rod) <- 'rod'
+> Idents(immune.combined,Cell= pericytes) <- 'pericytes'
+> Idents(immune.combined,cell= pericytes) <- 'pericytes'
+> Idents(immune.combined,cell=horizontal_cell) <- 'horizontal cell'
+> DimPlot(immune.combined)
+> View(immune.combined)
+> Idents(immune.combined) = immune.combined$seurat_clusters
+> cone = colnames(subset(immune.combined,idents = c('13','22')))
+> Idents(immune.combined,cell=cone) <- "cone"
+> DimPlot(immune.combined)
+> rod = colnames(subset(immune.combined,idents = c('1','3','5','0','10','24','32')))
+> Idents(immune.combined,cell=rod) <- "rod"
+> DimPlot(immune.combined)
+> pericytes = colnames(subset(immune.combined,ident = c('26')))
+> DimPlot(immune.combined)
+> Idents(immune.combined,cell=pericytes) <-"pericytes"
+> DimPlot(immune.combined)
+> horizontal_cell = colnames(subset(immune.combined,ident = '16'))
+> Idents(immune.combined,cell=horizontal_cell) <-"horizontal cell"
+> DimPlot(immune.combined)
+> Amacrine_cell = colnames(subset(immune.combined,idents =c('31','19')))
+> Idents(immune.combined,cell = Amacrine_cell) <- "Amacrine_cell"
+> DimPlot(immune.combined)
+> bipolar_cell = colnames(subset(immune.combined,idents = c('7','11','21','27','15','25','9','20','18','28')))
+> Idents(immune.combined,cell = bipolar_cell) <- "bipolar_cell"
+> DimPlot(immune.combined)
+> Idents(immune.combined,cell = bipolar_cell) <- "bipolar cell"
+> DimPlot(immune.combined)
+> Idents(immune.combined,cell = Amacrine_cell) <- "Amacrine cell"
+> astrocytes = colnames(subset(immune.combined,ident = '12'))
+> Idents(immune.combined,cell=astrocytes) <- "astrocytes" 
+> rgc = colnames(subset(immune.combined,ident = '8'))
+> Idents(immune.combined,cell= rgc) = "retinal ganglion cell"
+> DimPlot(immune.combined)
+> mg = colnames(subset(immune.combined,idents = '4','29','2','6','14'))
+> mg = colnames(subset(immune.combined,idents =c('4','29','2','6','14')))
+> Idents(immune.combined,cell = mg) <- 'muller glia'
+> DimPlot(immune.combined)
+> DimPlot(immune.combined,label = T)
+> a30 = colnames(subset(immune.combined,ident = '30' )) 
+> Idents(immune.combined,cell = a30)  = "rod"
+> a17 = colnames(subset(immune.combined,ident = '17'))
+> Idents(immune.combined,cell = a17) = 'bipolar cell'
+> a23 = colnames(subset(immune.combined,ident = 'microglia'))
+> a23 = colnames(subset(immune.combined,ident = '23'))
+> Idents(immune.combined,cell = a23) = 'microglia'
+> DimPlot(immune.combined)
+> immune.combined$celltype = Idents(immune.combined)
+> immune.combined@meta.data[['celltype']]%>%table()
+> View(immune.combined)
+> table(immune.combined$celltype,immune.combined$group)
+> table(immune.combined$group,immune.combined$celltype)
+> library(ggplot2)
+> table(immune.combined$group,immune.combined$celltype)
+> cell.prop <- as.data.frame(prop.table(table(immune.combined$group,immune.combined$celltype),2))
+> View(cell.prop)
+>p = ggplot(cell.prop,aes(x = Var2,y = Freq,fill = Var1))+geom_bar(stat = 'identity',position = "dodge",width = 0.5)+coord_flip()
