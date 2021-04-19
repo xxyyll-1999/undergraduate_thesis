@@ -1,0 +1,42 @@
+#Draw cell atlas
+folders = c("JS1","JS2","JS3","JS4","JS5","JS6","JS7","JS8","JS9","JS10","JS11","JS12","JS13","JS14","JS15","JS16")
+library(Seurat)
+
+#creat object
+sceList = lapply(folders,function(folder){              
+  CreateSeuratObject(counts = Read10X(folder), 
+                     project = folder,min.cells = 3, min.features = 200 )
+})
+
+#quality control
+for (i in 1:16) {
+  sceList[[i]][["percent.mt"]] <- PercentageFeatureSet(sceList[[i]], pattern = "^MT-")
+  p<-VlnPlot(sceList[[i]], features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+  ggsave(p,filename = paste("JS",i,".png",sep = ""),width = 6,height = 4)
+  sceList[[i]] <- subset(sceList[[i]], subset = nFeature_RNA > 200 & nFeature_RNA < 6000 & percent.mt < 15)
+  sceList[[i]] <- NormalizeData(sceList[[i]], normalization.method = "LogNormalize", scale.factor = 10000)
+  sceList[[i]] <- FindVariableFeatures(sceList[[i]], selection.method = "vst")
+  sceList[[i]]$orig.ident<-paste("JS",i,sep = "")
+}
+save(sceList,file = "sceList.rdata")
+
+#merge 16 samples
+i<-200
+immune.anchors <- FindIntegrationAnchors(object.list =sceList,anchor.features = 5000,k.filter = i) 
+save(immune.anchors,file = paste("anchor_JS",i,"rdata",sep = "."))
+immune.combined <- IntegrateData(anchorset = immune.anchors)
+
+DefaultAssay(immune.combined) <- "integrated"
+
+#dimensionality reduction with pca
+immune.combined <- ScaleData(immune.combined, verbose = FALSE)
+immune.combined <- RunPCA(immune.combined, verbose = FALSE)
+
+# t-SNE and Clustering
+immune.combined <- RunUMAP(immune.combined, reduction = "pca",dims = 1:30)
+immune.combined <- FindNeighbors(immune.combined, reduction = "pca",dims =1:30)
+immune.combined <- FindClusters(immune.combined, resolution = 0.5)
+save(immune.combined,file = paste("JS",i,".rdata",sep = ""))
+
+
+
