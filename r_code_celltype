@@ -1,0 +1,20 @@
+> library(readr)
+> markergene <- read_csv("markergene.csv")
+> markergene$gene
+> VlnPlot(immune.combined,features =markergene$gene,pt.size = 0)
+#调用RNA数据
+> Defaultassay(immune.combined) = "RNA"
+#提取某个细胞群
+> Idents(immune.combined) = immune.combined$seurat_clusters
+> index_rgc = colnames(subset(immune.combined,ident ='8'))
+> GC_cell = subset(immune.combined,cell=index_rgc)
+#标准化流程
+> GC_cell1 = NormalizeData(GC_cell1,normalization.method = "LogNormalize", scale.factor = 10000)
+> GetAssay(GC_cell1,assay = "RNA")
+> GC_cell = FindVariableFeatures(GC_cell, selection.method = "vst")
+> GC_cell <- ScaleData(GC_cell, verbose = FALSE)
+> GC_cell<- RunPCA(GC_cell, verbose = FALSE)
+> GC_cell <- RunUMAP(GC_cell, reduction = "pca",dims = 1:30)
+> GC_cell <- FindNeighbors(GC_cell, reduction = "pca",dims =1:30)
+> GC_cell <- FindClusters(GC_cell, resolution = 0.5)
+> save(GC_cell,file = "GC_cell.rdata")
